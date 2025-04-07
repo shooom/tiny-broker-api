@@ -1,0 +1,18 @@
+server:
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: broker-app
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true

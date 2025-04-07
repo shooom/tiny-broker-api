@@ -1,4 +1,4 @@
-package com.codility;
+package com.monolith;
 
 /**
  * WARNING: Do not modify the enum.

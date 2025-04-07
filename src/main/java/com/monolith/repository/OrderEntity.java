@@ -1,7 +1,7 @@
-package com.codility.repository;
+package com.monolith.repository;
 
-import com.codility.OrderSide;
-import com.codility.OrderStatus;
+import com.monolith.OrderSide;
+import com.monolith.OrderStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

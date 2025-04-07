@@ -1,4 +1,4 @@
-package com.codility.repository;
+package com.monolith.repository;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -1,4 +1,4 @@
-package com.codility;
+package com.monolith;
 
 import org.springframework.stereotype.Service;
 
