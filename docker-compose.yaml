@@ -1,6 +1,6 @@
 services:
   app:
-    image: broker-app:latest
+    image: broker-api:latest
     container_name: broker-app
     ports:
       - "8080:8080"
