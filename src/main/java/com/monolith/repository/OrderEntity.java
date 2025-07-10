@@ -24,6 +24,7 @@ public class OrderEntity {
     private OrderSide side;
     private BigDecimal quantity;
     private BigDecimal price;
+    // TODO: add createdAt, updatedAt
 
     public OrderEntity(String portfolioId, String isin, OrderStatus orderStatus, OrderSide side, BigDecimal quantity, BigDecimal price) {
         this.portfolioId = portfolioId;

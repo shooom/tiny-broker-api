@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static com.monolith.OrderStatus.*;
 
@@ -108,5 +109,9 @@ public class OrderService {
         log.info("Trying to finalize {} order", order.getId());
         order.setStatus(EXECUTED);
         return orderRepository.save(order);
+    }
+
+    public List<OrderEntity> getOrdersForPortfolio(String portfolioId) {
+        return orderRepository.findAllByPortfolioIdAndStatus(portfolioId, CREATED);
     }
 }

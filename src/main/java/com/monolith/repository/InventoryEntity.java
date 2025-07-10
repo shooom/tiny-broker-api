@@ -18,7 +18,7 @@ public class InventoryEntity {
     @Id
     private String isin;
     private BigDecimal quantity;
-
+    //TODO: add average price (field & calculation) for inventory
     public InventoryEntity() {
     }
 

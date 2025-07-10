@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -19,7 +20,7 @@ import static org.springframework.transaction.annotation.Isolation.REPEATABLE_RE
 @Service
 public class InventoryService {
 
-    private static final Logger log = LoggerFactory.getLogger(InventoryEntity.class);
+    private static final Logger log = LoggerFactory.getLogger(InventoryService.class);
 
     private final InventoryRepository inventoryRepository;
 
@@ -109,6 +110,10 @@ public class InventoryService {
         Optional<InventoryEntity> inventoryOpt = inventoryRepository.findById(inventoryId);
 
         return inventoryOpt.orElse(null);
+    }
+
+    public List<InventoryEntity> getInventoriesByPortfolioId(String portfolioId) {
+        return inventoryRepository.findAllByPortfolioId(portfolioId);
     }
 
     private void validateParametersWithQuantity(String portfolioId, String isin, BigDecimal quantity) {
