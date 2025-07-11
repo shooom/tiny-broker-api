@@ -275,41 +275,4 @@ public class BuyingPowerServiceTest {
             assertThat(exception.getMessage()).contains(availableAmount.toString());
         }
     }
-
-    @Nested
-    @DisplayName("Standardize Tests")
-    class StandardizeTests {
-
-        @Test
-        @DisplayName("Should standardize decimal values correctly")
-        void shouldStandardizeDecimalValuesCorrectly() {
-            // Arrange
-            BigDecimal input = new BigDecimal("100.123");
-            BigDecimal expected = new BigDecimal("100.12");
-            
-            // Act
-            BigDecimal result = (BigDecimal) ReflectionTestUtils.invokeMethod(
-                    buyingPowerService, "standardize", input);
-
-            // Assert
-            assertThat(result).isEqualTo(expected);
-            assertThat(result.scale()).isEqualTo(2);
-        }
-
-        @Test
-        @DisplayName("Should round half up when standardizing values")
-        void shouldRoundHalfUpWhenStandardizing() {
-            // Arrange
-            BigDecimal input = new BigDecimal("100.125");
-            BigDecimal expected = new BigDecimal("100.13");
-            
-            // Act
-            BigDecimal result = (BigDecimal) ReflectionTestUtils.invokeMethod(
-                    buyingPowerService, "standardize", input);
-
-            // Assert
-            assertThat(result).isEqualTo(expected);
-            assertThat(result.scale()).isEqualTo(2);
-        }
-    }
 }

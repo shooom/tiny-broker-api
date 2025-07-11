@@ -4,6 +4,6 @@ import java.math.BigDecimal;
 
 public record HoldingDto(
         String isin,
-        BigDecimal quantity
-//        BigDecimal averagePrice TODO: averagePrice for inventory will be added later
+        BigDecimal quantity,
+        BigDecimal averagePrice
         ) {}

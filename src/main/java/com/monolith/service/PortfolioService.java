@@ -33,7 +33,8 @@ public class PortfolioService {
         List<HoldingDto> holdings = inventoryList.stream()
                 .map(inventory -> new HoldingDto(
                         inventory.getIsin(),
-                        inventory.getQuantity()
+                        inventory.getQuantity(),
+                        inventory.getAveragePrice()
                 ))
                 .toList();
 
