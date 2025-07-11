@@ -6,10 +6,6 @@ import jakarta.persistence.IdClass;
 
 import java.math.BigDecimal;
 
-/**
- * WARNING: Do not modify the entity.
- * The file does not need to be submitted, it is only for your reference.
- */
 @Entity
 @IdClass(InventoryEntityId.class)
 public class InventoryEntity {
@@ -18,14 +14,16 @@ public class InventoryEntity {
     @Id
     private String isin;
     private BigDecimal quantity;
-    //TODO: add average price (field & calculation) for inventory
+    private BigDecimal averagePrice;
+
     public InventoryEntity() {
     }
 
-    public InventoryEntity(String portfolioId, String isin, BigDecimal quantity) {
+    public InventoryEntity(String portfolioId, String isin, BigDecimal quantity, BigDecimal averagePrice) {
         this.portfolioId = portfolioId;
         this.isin = isin;
         this.quantity = quantity;
+        this.averagePrice = averagePrice;
     }
 
     public String getPortfolioId() {
@@ -38,6 +36,10 @@ public class InventoryEntity {
 
     public BigDecimal getQuantity() {
         return quantity;
+    }
+
+    public BigDecimal getAveragePrice() {
+        return averagePrice;
     }
 }
 

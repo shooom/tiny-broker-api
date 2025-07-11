@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
+import static com.monolith.utils.MoneyOperations.standardize;
 import static java.lang.String.format;
 import static org.springframework.transaction.annotation.Isolation.SERIALIZABLE;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
@@ -29,8 +29,6 @@ public class BuyingPowerService {
     private BigDecimal INITIAL_BUYING_POWER;
 
     private static final String INSUFFICIENT_BUY_POWER_EXC = "Insufficient buying power for portfolio %s: required %s, available %s";
-    private static final int MONEY_SCALE = 2;
-    private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
 
     public BuyingPowerService(BuyingPowerRepository buyingPowerRepository) {
         this.buyingPowerRepository = buyingPowerRepository;
@@ -107,15 +105,5 @@ public class BuyingPowerService {
             log.warn(message);
             throw new IllegalArgumentException(message);
         }
-    }
-
-    /**
-     * Standardizes BigDecimal operations by applying consistent scale and rounding mode.
-     *
-     * @param amount the amount to standardize
-     * @return the standardized amount
-     */
-    private BigDecimal standardize(BigDecimal amount) {
-        return amount.setScale(MONEY_SCALE, ROUNDING_MODE);
     }
 }

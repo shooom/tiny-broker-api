@@ -15,12 +15,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class TestUtils {
     // Constants for test data
     public static final String PORTFOLIO_ID = "portfolio-id-1";
+
     public static final String ISIN_NVIDIA = "US67066G1040";
-    public static final String ISIN_APPLE = "US0378331005";
-    public static final String ISIN_MICROSOFT = "US5949181045";
     public static final BigDecimal PRICE_NVIDIA = new BigDecimal("100.00");
+
+    public static final String ISIN_APPLE = "US0378331005";
     public static final BigDecimal PRICE_APPLE = new BigDecimal("200.00");
+
+    public static final String ISIN_MICROSOFT = "US5949181045";
     public static final BigDecimal PRICE_MICROSOFT = new BigDecimal("35.50");
+
     public static final BigDecimal DEFAULT_QUANTITY = new BigDecimal("10.00");
     public static final Long ORDER_ID = 1L;
 

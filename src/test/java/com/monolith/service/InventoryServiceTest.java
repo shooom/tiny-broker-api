@@ -37,7 +37,7 @@ class InventoryServiceTest {
         @DisplayName("Should return inventory entity when it exists")
         void shouldReturnInventoryWhenExists() {
             // Arrange
-            InventoryEntity expected = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, BigDecimal.TEN);
+            InventoryEntity expected = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, BigDecimal.TEN, PRICE_NVIDIA);
 
             doReturn(Optional.of(expected)).when(inventoryRepository).findById(any(InventoryEntityId.class));
 
@@ -49,6 +49,7 @@ class InventoryServiceTest {
             assertEquals(PORTFOLIO_ID, result.getPortfolioId());
             assertEquals(ISIN_NVIDIA, result.getIsin());
             assertEquals(BigDecimal.TEN, result.getQuantity());
+            assertEquals(PRICE_NVIDIA, result.getAveragePrice());
         }
 
         @Test
@@ -77,20 +78,21 @@ class InventoryServiceTest {
             BigDecimal quantityToAdd = new BigDecimal("3");
             BigDecimal expectedQuantity = new BigDecimal("8");
             
-            InventoryEntity initialEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, initialQuantity);
-            InventoryEntity expectedEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, expectedQuantity);
+            InventoryEntity initialEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, initialQuantity, PRICE_NVIDIA);
+            InventoryEntity expectedEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, expectedQuantity, PRICE_NVIDIA);
             
             doReturn(Optional.of(initialEntity)).when(inventoryRepository).findById(any(InventoryEntityId.class));
             doReturn(expectedEntity).when(inventoryRepository).save(any(InventoryEntity.class));
 
             // Act
-            InventoryEntity result = inventoryService.addToInventory(PORTFOLIO_ID, ISIN_NVIDIA, quantityToAdd);
+            InventoryEntity result = inventoryService.addToInventory(PORTFOLIO_ID, ISIN_NVIDIA, quantityToAdd, PRICE_NVIDIA);
 
             // Assert
             assertNotNull(result);
             assertEquals(PORTFOLIO_ID, result.getPortfolioId());
             assertEquals(ISIN_NVIDIA, result.getIsin());
             assertEquals(expectedQuantity, result.getQuantity());
+            assertEquals(PRICE_NVIDIA, result.getAveragePrice());
         }
 
         @Test
@@ -98,19 +100,20 @@ class InventoryServiceTest {
         void shouldCreateNewInventory() {
             // Arrange
             BigDecimal quantityToAdd = new BigDecimal("3");
-            InventoryEntity expectedEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, quantityToAdd);
+            InventoryEntity expectedEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, quantityToAdd, PRICE_NVIDIA);
             
             doReturn(Optional.empty()).when(inventoryRepository).findById(any(InventoryEntityId.class));
             doReturn(expectedEntity).when(inventoryRepository).save(any(InventoryEntity.class));
 
             // Act
-            InventoryEntity result = inventoryService.addToInventory(PORTFOLIO_ID, ISIN_NVIDIA, quantityToAdd);
+            InventoryEntity result = inventoryService.addToInventory(PORTFOLIO_ID, ISIN_NVIDIA, quantityToAdd, PRICE_NVIDIA);
 
             // Assert
             assertNotNull(result);
             assertEquals(PORTFOLIO_ID, result.getPortfolioId());
             assertEquals(ISIN_NVIDIA, result.getIsin());
             assertEquals(quantityToAdd, result.getQuantity());
+            assertEquals(PRICE_NVIDIA, result.getAveragePrice());
         }
     }
 
@@ -126,8 +129,8 @@ class InventoryServiceTest {
             BigDecimal quantityToRemove = new BigDecimal("4");
             BigDecimal expectedQuantity = new BigDecimal("6");
             
-            InventoryEntity initialEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, initialQuantity);
-            InventoryEntity expectedEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, expectedQuantity);
+            InventoryEntity initialEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, initialQuantity, PRICE_NVIDIA);
+            InventoryEntity expectedEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, expectedQuantity, PRICE_NVIDIA);
             
             doReturn(Optional.of(initialEntity)).when(inventoryRepository).findById(any(InventoryEntityId.class));
             doReturn(expectedEntity).when(inventoryRepository).save(any(InventoryEntity.class));
@@ -140,27 +143,29 @@ class InventoryServiceTest {
             assertEquals(PORTFOLIO_ID, result.getPortfolioId());
             assertEquals(ISIN_NVIDIA, result.getIsin());
             assertEquals(expectedQuantity, result.getQuantity());
+            assertEquals(PRICE_NVIDIA, result.getAveragePrice());
         }
 
         @Test
-        @DisplayName("Should delete inventory when quantity becomes zero")
+        @DisplayName("Should set inventory quantity & averagePrice as ZERO")
         void shouldDeleteInventoryWhenQuantityBecomesZero() {
             // Arrange
             BigDecimal initialQuantity = new BigDecimal("5");
             BigDecimal quantityToRemove = new BigDecimal("5"); // Will result in zero
             
-            InventoryEntity initialEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, initialQuantity);
+            InventoryEntity initialEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, initialQuantity, PRICE_NVIDIA);
             
             doReturn(Optional.of(initialEntity)).when(inventoryRepository).findById(any(InventoryEntityId.class));
+
+            when(inventoryRepository.save(any(InventoryEntity.class)))
+                    .thenAnswer(invocationOnMock -> invocationOnMock.<InventoryEntity>getArgument(0));
 
             // Act
             InventoryEntity result = inventoryService.removeFromInventory(PORTFOLIO_ID, ISIN_NVIDIA, quantityToRemove);
 
             // Assert
-            assertNull(result);
-            
-            verify(inventoryRepository).deleteById(any(InventoryEntityId.class));
-            verify(inventoryRepository, never()).save(any(InventoryEntity.class));
+            assertEquals(BigDecimal.ZERO, result.getQuantity());
+            assertEquals(BigDecimal.ZERO, result.getAveragePrice());
         }
 
         @Test
@@ -170,7 +175,7 @@ class InventoryServiceTest {
             BigDecimal initialQuantity = new BigDecimal("3");
             BigDecimal quantityToRemove = new BigDecimal("5"); // More than available
             
-            InventoryEntity initialEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, initialQuantity);
+            InventoryEntity initialEntity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, initialQuantity, PRICE_NVIDIA);
             
             doReturn(Optional.of(initialEntity)).when(inventoryRepository).findById(any(InventoryEntityId.class));
 
@@ -222,7 +227,7 @@ class InventoryServiceTest {
             BigDecimal inventoryQuantity = new BigDecimal("10");
             BigDecimal requiredQuantity = new BigDecimal("7");
             
-            InventoryEntity entity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, inventoryQuantity);
+            InventoryEntity entity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, inventoryQuantity, PRICE_NVIDIA);
             
             doReturn(Optional.of(entity)).when(inventoryRepository).findById(any(InventoryEntityId.class));
 
@@ -238,7 +243,7 @@ class InventoryServiceTest {
             // Arrange
             BigDecimal quantity = new BigDecimal("5");
             
-            InventoryEntity entity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, quantity);
+            InventoryEntity entity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, quantity, PRICE_NVIDIA);
             
             doReturn(Optional.of(entity)).when(inventoryRepository).findById(any(InventoryEntityId.class));
 
@@ -255,7 +260,7 @@ class InventoryServiceTest {
             BigDecimal inventoryQuantity = new BigDecimal("3");
             BigDecimal requiredQuantity = new BigDecimal("5");
             
-            InventoryEntity entity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, inventoryQuantity);
+            InventoryEntity entity = new InventoryEntity(PORTFOLIO_ID, ISIN_NVIDIA, inventoryQuantity, PRICE_NVIDIA);
             
             doReturn(Optional.of(entity)).when(inventoryRepository).findById(any(InventoryEntityId.class));
 

@@ -81,7 +81,7 @@ public class TradingService {
         buyingPowerService.deductBuyingPower(order.getPortfolioId(), totalCost);
 
         // Add securities to inventory
-        inventoryService.addToInventory(order.getPortfolioId(), order.getIsin(), order.getQuantity());
+        inventoryService.addToInventory(order.getPortfolioId(), order.getIsin(), order.getQuantity(), order.getPrice());
     }
 
     /**
@@ -91,6 +91,7 @@ public class TradingService {
         BigDecimal totalProceeds = order.getPrice().multiply(order.getQuantity());
 
         // Verify and remove from inventory
+        //TODO: add valid recalculation of averagePrice
         inventoryService.removeFromInventory(order.getPortfolioId(), order.getIsin(), order.getQuantity());
 
         // Add proceeds to buying power
